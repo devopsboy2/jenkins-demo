@@ -1,17 +1,14 @@
 pipeline {
-    agent any
+    agent {
+        label 'docker'
+    }
 
     stages {
-        stage('Verify Files') {
+        stage('Check Agent') {
             steps {
+                sh 'echo "Running on agent:"'
+                sh 'hostname'
                 sh 'pwd'
-                sh 'ls -la'
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                sh 'docker build -t jenkins-demo .'
             }
         }
     }
