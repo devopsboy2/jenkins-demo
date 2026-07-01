@@ -1,15 +1,3 @@
-pipeline {
-    agent {
-        label 'docker'
-    }
-
-    stages {
-        stage('Check Agent') {
-            steps {
-                sh 'echo "Running on agent:"'
-                sh 'hostname'
-                sh 'pwd'
-            }
-        }
-    }
-}
+git add Jenkinsfile
+git commit -m "Add Docker build pipeline"
+git push origin main
