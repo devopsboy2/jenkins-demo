@@ -1,42 +1,17 @@
-pipeline {
-    agent {
-        label 'docker'
+stage('Remove Old Container') {
+    steps {
+        sh 'docker rm -f demo-web || true'
     }
+}
 
-    stages {
-        stage('Verify Workspace') {
-            steps {
-                sh 'echo "Workspace:"'
-                sh 'pwd'
-                sh 'ls -la'
-            }
-        }
-
-        stage('Check Docker') {
-            steps {
-                sh 'docker --version'
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                sh 'docker build -t jenkins-demo:v1 .'
-            }
-        }
-
-        stage('List Images') {
-            steps {
-                sh 'docker images | grep jenkins-demo'
-            }
-        }
+stage('Run Container') {
+    steps {
+        sh 'docker run -d --name demo-web -p 8088:80 jenkins-demo:v1'
     }
+}
 
-    post {
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed.'
-        }
+stage('Verify Running Container') {
+    steps {
+        sh 'docker ps'
     }
 }
