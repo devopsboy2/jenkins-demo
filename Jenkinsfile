@@ -30,6 +30,28 @@ pipeline {
             }
         }
 
+        stage('Login to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login \
+                        -u "$DOCKER_USER" \
+                        --password-stdin
+                    '''
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                sh 'docker push ${IMAGE_NAME}:${IMAGE_TAG}'
+            }
+        }
+
         stage('List Images') {
             steps {
                 sh 'docker images | grep jenkins-demo'
@@ -57,8 +79,9 @@ pipeline {
 
     post {
         success {
-            echo 'Application deployed successfully!'
+            echo 'Application built, pushed and deployed successfully!'
         }
+
         failure {
             echo 'Pipeline failed.'
         }
