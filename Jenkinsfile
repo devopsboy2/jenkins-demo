@@ -3,6 +3,11 @@ pipeline {
         label 'docker'
     }
 
+    environment {
+        IMAGE_NAME = "tudtech/jenkins-demo"
+        IMAGE_TAG = "${BUILD_NUMBER}"
+    }
+
     stages {
 
         stage('Verify Workspace') {
@@ -21,7 +26,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t jenkins-demo:v1 .'
+                sh 'docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .'
             }
         }
 
@@ -39,7 +44,7 @@ pipeline {
 
         stage('Run Container') {
             steps {
-                sh 'docker run -d --name demo-web -p 8088:80 jenkins-demo:v1'
+                sh 'docker run -d --name demo-web -p 8088:80 ${IMAGE_NAME}:${IMAGE_TAG}'
             }
         }
 
